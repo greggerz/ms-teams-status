@@ -1,0 +1,15 @@
+{
+  "name": "MS Teams Status",
+  "description": "This extension uses the idle api to keep Teams from setting you to Away if you're still active on your system",
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "permissions": ["alarms", "tabs", "scripting", "idle"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "ms-teams-icon.png",
+    "128": "ms-teams-icon.png"
+  },
+  "host_permissions": ["https://*.teams.microsoft.com/*"]
+}
