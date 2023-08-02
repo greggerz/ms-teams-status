@@ -11,7 +11,7 @@ chrome.runtime.onInstalled.addListener(() => {
  *
  * @param {chrome.idle.IdleState} idleState The current idle state
  */
-const setStatus = async (idleState: chrome.idle.IdleState) => {
+const setStatus = async (idleState: chrome.idle.IdleState): Promise<void> => {
   const status = document.querySelector('span.ts-skype-status') as Element;
   let statusTitle: any;
   if ('title' in status) {
@@ -43,7 +43,7 @@ const setStatus = async (idleState: chrome.idle.IdleState) => {
    *
    * @returns the current endpointId
    */
-  const getEndpointId = () => {
+  const getEndpointId = (): string => {
     let endpointId: string = '';
 
     for (let i = 0; i < localStorage.length; i += 1) {
@@ -160,7 +160,7 @@ const setStatus = async (idleState: chrome.idle.IdleState) => {
  *
  * @param {chrome.idle.IdleState} idleState The current idle state
  */
-const getTeamsTabAndSetStatus = (idleState: chrome.idle.IdleState) => {
+const getTeamsTabAndSetStatus = (idleState: chrome.idle.IdleState): void => {
   chrome.tabs.query({ url: 'https://teams.microsoft.com/*' }, (tabs) => {
     tabs.forEach((tab) => {
       chrome.scripting.executeScript(
@@ -175,7 +175,7 @@ const getTeamsTabAndSetStatus = (idleState: chrome.idle.IdleState) => {
   });
 };
 
-chrome.alarms.onAlarm.addListener((alarm) => {
+chrome.alarms.onAlarm.addListener((alarm): void => {
   if (alarm.name === alarmName) {
     chrome.idle.queryState(300, (newState: chrome.idle.IdleState) => {
       console.log('idle state:', newState);

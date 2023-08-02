@@ -22,6 +22,10 @@ browse to where this repository is cloned and select the `dist` folder.
 Pull requests are welcome. For major changes, please open an issue first to
 discuss what you would like to change.
 
-## License
+## Licenses
 
-[GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html#license-text)
+- MS Teams icon: [Microsoft
+  Corporation](https://commons.wikimedia.org/wiki/File:Microsoft_Office_Teams_(2018%E2%80%93present).svg),
+  Public domain, via Wikimedia Commons
+
+- Code: [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html#license-text)
