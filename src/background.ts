@@ -12,146 +12,34 @@ chrome.runtime.onInstalled.addListener(() => {
  * @param {chrome.idle.IdleState} idleState The current idle state
  */
 const setStatus = async (idleState: chrome.idle.IdleState): Promise<void> => {
-  const status = document.querySelector('span.ts-skype-status') as Element;
-  let statusTitle: any;
-  if ('title' in status) {
-    console.log('current status:', status?.title);
-    statusTitle = status?.title;
-  }
+  const status = document.querySelector('[data-tid="me-control-avatar-trigger"]') as Element;
+  const statusTitle = (status.getAttribute('aria-label')!).slice(46, -2);
+  console.log(`current status: ${statusTitle}`);
 
   /**
-   * Get authentication token from local storage
-   *
-   * @returns the authentication token
+   * Mimic a mouse move event to keep user presence Available
    */
-  const getAuthToken = (): string => {
-    let token: string = '';
+  const mimicMouseEvent = () => {
+    const clientX = 20;
+    const clientY = window.innerHeight / 2;
+    const movementX = 5;
+    const movementY = 2;
 
-    for (let i = 0; i < localStorage.length; i += 1) {
-      const key = localStorage.key(i);
-      if (key?.startsWith('ts.') && key?.endsWith('cache.token.https://presence.teams.microsoft.com/')) {
-        const storageValue = localStorage.getItem(key);
-        ({ token } = JSON.parse(storageValue as string));
-      }
-    }
-
-    return token;
-  };
-
-  /**
-   * Get the current endpointId from local storage
-   *
-   * @returns the current endpointId
-   */
-  const getEndpointId = (): string => {
-    let endpointId: string = '';
-
-    for (let i = 0; i < localStorage.length; i += 1) {
-      const key = localStorage.key(i);
-      if (key?.startsWith('ts.') && key?.endsWith('userUpsEndpointIdsMap')) {
-        const storageValue = localStorage.getItem(key);
-        const storageObject = JSON.parse(storageValue as string);
-        const endpointKey = Object.keys(storageObject)[0];
-
-        // desc sort endpoint ids by lastActiveTimestamp
-        storageObject[endpointKey].sort(
-          (a: any, b: any) => b.lastActiveTimestamp - a.lastActiveTimestamp,
-        );
-
-        // eslint-disable-next-line prefer-destructuring
-        ({ endpointId } = storageObject[endpointKey][0]);
-      }
-    }
-
-    return endpointId;
-  };
-
-  /**
-   * Submit teams requests to reflect status
-   * @param {string} url The url to submit the request to
-   * @param {string} body The payload of the request
-   * @param {string} method The request method
-   * @returns {Response} The response from the request
-   */
-  const submitRequest = async (
-    url: string,
-    body: string,
-    method: string,
-  ): Promise<Response> => {
-    const response = await fetch(url, {
-      headers: {
-        Accept: 'json',
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${getAuthToken()}`,
-      },
-      body,
-      method,
+    const mouseEvent = new MouseEvent('mousemove', {
+      view: window,
+      bubbles: true,
+      clientX,
+      clientY,
+      movementX,
+      movementY,
     });
 
-    return response;
+    document.dispatchEvent(mouseEvent);
   };
 
-  if (statusTitle === 'Away' && idleState === 'active') {
-    const url = 'https://presence.teams.microsoft.com/v1/me/forceavailability/';
-    const body = '{"availability":"Available"}';
-    const method = 'PUT';
-
-    const response = await submitRequest(url, body, method);
-
-    if (response.status === 200) {
-      console.log('availability set to Available');
-    } else {
-      console.log(
-        `failed to submit available availability request: HTTP ${response.status}`,
-      );
-    }
-  }
-
-  if (
-    idleState === 'locked'
-    && status != null
-    && statusTitle !== 'In a call'
-    && statusTitle !== 'Busy'
-    && statusTitle !== 'In a meeting'
-    && statusTitle !== 'Out of Office'
-  ) {
-    const url = 'https://presence.teams.microsoft.com/v1/me/forceavailability/';
-    const body = '{"availability":"Away"}';
-    const method = 'PUT';
-
-    const response = await submitRequest(url, body, method);
-
-    if (response.status === 200) {
-      console.log('availability set to Away');
-    } else {
-      console.log(
-        `failed to submit away availability request: HTTP ${response.status}`,
-      );
-    }
-  }
-
-  if (
-    status != null
-    && statusTitle !== 'In a call'
-    && statusTitle !== 'Busy'
-    && statusTitle !== 'In a meeting'
-    && statusTitle !== 'Out of Office'
-    && idleState !== 'locked'
-    && idleState !== 'idle'
-  ) {
-    const url = 'https://presence.teams.microsoft.com/v1/me/reportmyactivity/';
-    const body = `{"endpointId": "${getEndpointId()}","isActive": true}`;
-    const method = 'POST';
-
-    const response = await submitRequest(url, body, method);
-
-    if (response.status === 200) {
-      console.log('sent reportmyactivity request');
-    } else {
-      console.log(
-        `failed to submit report activity request: HTTP ${response.status}`,
-      );
-    }
+  if (idleState === 'active') {
+    console.log('calling mimicMouseEvent');
+    mimicMouseEvent();
   }
 };
 
