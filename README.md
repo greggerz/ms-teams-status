@@ -1,6 +1,6 @@
 # MS Teams Status
 
-A Chrome/Edge extension that utilizes the idle api to keep Teams from setting your status to Away if you're still active on your system.
+A Firefox/Chrome/Edge extension that utilizes the idle api to keep Teams from setting your status to Away if you're still active on your system.
 
 ## Setup
 

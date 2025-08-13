@@ -5,11 +5,16 @@
   "manifest_version": 3,
   "permissions": ["alarms", "tabs", "scripting", "idle"],
   "background": {
-    "service_worker": "background.js"
+    "scripts": ["background.js"]
   },
   "icons": {
     "16": "ms-teams-icon.png",
     "128": "ms-teams-icon.png"
   },
-  "host_permissions": ["https://*.teams.microsoft.com/*"]
+  "host_permissions": ["https://*.teams.microsoft.com/*"],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "@ms-teams-status"
+    }
+  }
 }
